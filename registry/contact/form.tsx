@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useActionState, useRef, useTransition } from "react";
+import { useState, useRef, useTransition } from "react";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,11 +20,11 @@ import { submitContactForm } from "./action";
 import { formSchema } from "./schema";
 
 type FormValues = z.infer<typeof formSchema>;
+type FormState = { message: string };
 
 export function ContactForm() {
-  const [state, formAction] = useActionState(submitContactForm, {
-    message: "",
-  });
+  const [state, setState] = useState<FormState>({ message: "" });
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -35,16 +35,17 @@ export function ContactForm() {
     },
   });
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    startTransition(() => {
-      formAction(new FormData(formRef.current!));
+    startTransition(async () => {
+      const formData = new FormData(formRef.current!);
+      const result = await submitContactForm(state, formData);
+      setState(result);
       form.reset();
     });
   };
-
-  const formRef = useRef<HTMLFormElement>(null);
-  const [isPending, startTransition] = useTransition();
 
   return (
     <div className="max-w-md w-full mx-auto space-y-6">
@@ -63,7 +64,6 @@ export function ContactForm() {
       <Form {...form}>
         <form
           ref={formRef}
-          action={formAction}
           onSubmit={onSubmit}
           className="space-y-6"
         >

@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useActionState, useRef, useTransition } from "react";
+import { useState, useRef, useTransition } from "react";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,11 +19,11 @@ import { submitWaitlistForm } from "./action";
 import { formSchema } from "./schema";
 
 type FormValues = z.infer<typeof formSchema>;
+type FormState = { message: string };
 
 export function WaitlistForm() {
-  const [state, formAction] = useActionState(submitWaitlistForm, {
-    message: "",
-  });
+  const [state, setState] = useState<FormState>({ message: "" });
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -32,16 +32,17 @@ export function WaitlistForm() {
     },
   });
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    startTransition(() => {
-      formAction(new FormData(formRef.current!));
+    startTransition(async () => {
+      const formData = new FormData(formRef.current!);
+      const result = await submitWaitlistForm(state, formData);
+      setState(result);
       form.reset();
     });
   };
-
-  const formRef = useRef<HTMLFormElement>(null);
-  const [isPending, startTransition] = useTransition();
 
   return (
     <div className="max-w-md w-full mx-auto space-y-6">
@@ -60,7 +61,6 @@ export function WaitlistForm() {
       <Form {...form}>
         <form
           ref={formRef}
-          action={formAction}
           onSubmit={onSubmit}
           className="space-y-6"
         >
