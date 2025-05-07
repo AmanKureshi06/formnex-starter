@@ -32,6 +32,7 @@ Make sure to add the following to your .env.local file:
 
 ```bash
 FORMNEX_API_KEY=your_api_key
+FORMNEX_ENDPOINT_URL=your_endpoint_url
 ```
 
 You can always reference the example project in this repo for more details.

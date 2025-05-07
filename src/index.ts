@@ -79,6 +79,7 @@ console.log(chalk.blue("📦 Installing components...\n"));
     console.log(
       chalk.gray(`
         FORMNEX_API_KEY=your_api_key
+        FORMNEX_ENDPOINT_URL=your_endpoint_url
       `)
     );
 

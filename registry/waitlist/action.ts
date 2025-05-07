@@ -19,8 +19,7 @@ export async function submitWaitlistForm(
 
   try {
     const response = await fetch(
-      "https://formnexapp.vercel.app/api/endpoints/{YOUR_ENDPOINT_ID}",
-      // Replace {YOUR_ENDPOINT_ID} with your actual endpoint ID
+      `${process.env.FORMNEX_ENDPOINT_URL}`, // Ensure this is set in your environment
       {
         method: "POST",
         headers: {
