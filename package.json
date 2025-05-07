@@ -1,6 +1,6 @@
 {
   "name": "@techaxis/formnex-start",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "CLI tool to add contact and waitlist components to Next.js apps",
   "type": "module",
   "main": "dist/index.js",
