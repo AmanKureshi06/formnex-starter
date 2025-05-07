@@ -16,7 +16,7 @@ Pre-made components to get you started with Formnex.
 3. Use the npx command to install the components
 
 ```bash
-npx @9d8/router-start
+npx @techaxis/router-start
 ```
 
 It will add the following files to your project:
